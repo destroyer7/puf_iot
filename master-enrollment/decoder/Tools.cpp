@@ -110,7 +110,7 @@ void Tools::combine_two_bin_array_to_uint8_array(int8_t *bin1, int length_bin1, 
     //memcpy(temp, bin1, length_bin1);
     copy(bin1, bin1 + length_bin1, temp);
     //memcpy(&temp[length_bin1], bin2, length_bin2);
-    copy(bin2, bin2 + length_bin2, temp + length_bin1);
+    copy(bin2, bin2 + length_bin2, &temp[length_bin1]);
     convert_bin_array_to_uint8_array(temp, result, length_bin1 + length_bin2);
 }
 

@@ -21,10 +21,14 @@ BCH::BCH() {
 
 
 void BCH::initialize() {
-    memset(p, 0, sizeof(p));
-    memset(alpha_to, 0, sizeof(alpha_to));
-    memset(index_of, 0, sizeof(index_of));
-    memset(g, 0, sizeof(g));
+    //memset(p, 0, sizeof(p));
+    fill(p,p+sizeof(p),0);
+    //memset(alpha_to, 0, sizeof(alpha_to));
+    fill(alpha_to,alpha_to+sizeof(alpha_to),0);
+    //memset(index_of, 0, sizeof(index_of));
+    fill(index_of,index_of+sizeof(index_of),0);
+    //memset(g, 0, sizeof(g));
+    fill(g,g+sizeof(g),0);
 
     tools = Tools();
     initialize_p();
@@ -116,12 +120,19 @@ BCH::gen_poly()
 {
     register int8_t ii, jj, ll, kaux;
     register int8_t test, aux, nocycles, root, noterms, rdncy;
-    int8_t cycle[(int) pow(2, m)][m], size[(int8_t) pow(2, m)], min[(int8_t) pow(2, m)], zeros[(int8_t) pow(2, m)];
+    int8_t cycle[(int) pow(2, m)][m] = {0}; 
+    int8_t size[(int8_t) pow(2, m)];
+    int8_t min[(int8_t) pow(2, m)];
+    int8_t zeros[(int8_t) pow(2, m)];
 
-    memset(cycle, 0, sizeof(cycle));
-    memset(size, 0, sizeof(size));
-    memset(min, 0, sizeof(min));
-    memset(zeros, 0, sizeof(zeros));
+    //memset(cycle, 0, sizeof(cycle));
+    //fill(cycle,cycle + sizeof(cycle),0);
+    //memset(size, 0, sizeof(size));
+    fill(size,size + sizeof(size),0);
+    //memset(min, 0, sizeof(min));
+    fill(min,min + sizeof(min),0);
+    //memset(zeros, 0, sizeof(zeros));
+    fill(zeros,zeros + sizeof(zeros),0);
 
     /* Generate cycle sets modulo n, n = 2**m - 1 */
     cycle[0][0] = 0;
@@ -218,7 +229,8 @@ void BCH::encode_bch(uint8_t *in, uint8_t *result)
     register int8_t feedback;
 
     int8_t input[8];
-    memset(input, 0, sizeof(input));
+    //memset(input, 0, sizeof(input));
+    fill(input,input+sizeof(input),0);
     tools.convert_uint8_array_to_bin_array(in, input, 1);
 
     int8_t bb[n - k];
@@ -286,6 +298,7 @@ BCH::decode_bch(uint8_t *in, uint8_t *result)
 
     int8_t input[64];
     memset(input, 0, sizeof(input));
+    fill(input,input+sizeof(input),0);
     tools.convert_uint8_array_to_bin_array(in, input, 8);
 
     // decode_bch_old(input, result);

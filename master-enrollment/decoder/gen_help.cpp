@@ -18,7 +18,8 @@ BCH bch;
 Tools tools;
 
 void get_response(){
-    memset(puf_binary_new, 0, sizeof(puf_binary_new));
+    fill(puf_binary_new, puf_binary_new + sizeof(puf_binary_new),0);
+    //memset(puf_binary_new, 0, sizeof(puf_binary_new));
     uint8_t result;
 
     // read
@@ -45,7 +46,9 @@ void get_response(){
 }
 
 void get_helper_data(){
-    memset(puf_binary_new, 0, sizeof(puf_binary_new));
+    fill(puf_binary_new,puf_binary_new + sizeof(puf_binary_new),0);
+    //memset(puf_binary_new, 0, sizeof(puf_binary_new));
+
     uint8_t result;
 
     // read
@@ -116,7 +119,8 @@ void gen_helper_data(){
     /******************** ASSERT HELPER DATA **********************/
     for (int i = 0; i < 37; i++) {
         //memcpy(&helper_data_new[i * 7], &xor_enroll_new[i * 8], 7 * sizeof(uint8_t));
-        copy(xor_enroll_new + i*8, xor_enroll_new + i*8 + 7,helper_data_new + i*7);
+        //copy(xor_enroll_new + i*8, xor_enroll_new + i*8 + 7,helper_data_new + i*7);
+        copy(&xor_enroll_new[i * 8],&xor_enroll_new[i * 8] + 7 * sizeof(uint8_t),&helper_data_new[i * 7]);
     }
     
     string name = "H";
@@ -173,9 +177,12 @@ void decode(uint8_t *key_32) {
   uint8_t xor_reproduction_new[8 * 37];
   uint8_t reconstructed_key_new[37];
 
-  memset(helper_data_padded_new, 0, sizeof(helper_data_padded_new));
-  memset(xor_reproduction_new, 0, sizeof(xor_reproduction_new));
-  memset(reconstructed_key_new, 0, sizeof(reconstructed_key_new));
+  //memset(helper_data_padded_new, 0, sizeof(helper_data_padded_new));
+  fill(helper_data_padded_new,helper_data_padded_new + sizeof(helper_data_padded_new),0);
+  //memset(xor_reproduction_new, 0, sizeof(xor_reproduction_new));
+  fill(xor_reproduction_new,xor_reproduction_new + sizeof(xor_reproduction_new),0);
+  //memset(reconstructed_key_new, 0, sizeof(reconstructed_key_new));
+  fill(reconstructed_key_new,reconstructed_key_new + sizeof(reconstructed_key_new),0);
 
   int row = 37;
   int n = bch.get_n();
@@ -192,7 +199,8 @@ void decode(uint8_t *key_32) {
   /******************** ASSERT HELPER DATA PADDED**********************/
   for (int i = 0; i < row; i++) {
     //memcpy(&helper_data_padded_new[i * 8], &helper_data_new[i * 7], 7 * sizeof(uint8_t));
-    copy(helper_data_new + i*7, helper_data_new + i*7 + 7, helper_data_padded_new + i*8);
+    //copy(helper_data_new + i*7, helper_data_new + i*7 + 7, helper_data_padded_new + i*8);
+    copy(&helper_data_new[i * 7],&helper_data_new[i * 7] + 7 * sizeof(uint8_t),&helper_data_padded_new[i * 8]);
   }
 
   
@@ -226,6 +234,14 @@ void print_array(uint8_t* arr,int length){
     }
     cout<<endl;
 }
+
+void print_array_uint8t(uint8_t* arr,int length){
+     for (int i = 0; i < length; i++){
+        cout<<to_string(arr[i])<<endl; 
+    }
+    cout<<endl;
+}
+
 void write_array(uint8_t* arr, int length,string name){
     ofstream myFile(name);
 
@@ -247,25 +263,29 @@ int main(){
 
     get_response();
     cout<<"PUF_BINARY_NEW:"<<endl;
-    print_array(puf_binary_new,296);
+    //print_array(puf_binary_new,296);
+    print_array_uint8t(puf_binary_new,296);
 
-    memset(key_256, 0, 32 * sizeof(uint8_t));
+    fill(key_256,key_256 + sizeof(key_256),0);
     copy(puf_binary_new ,puf_binary_new + 32,key_256);
     cout<<"KEY_256:"<<endl;
-    print_array(key_256,32);
+    //print_array_uint(key_256,32);
+    print_array_uint8t(key_256,32);
 
     gen_key_per_row(key_256, key_per_row);
     cout<<"KEY_PER_ROW:"<<endl;
-    print_array(key_per_row,37);
+    print_array_uint8t(key_per_row,37);
 
-    //get_helper_data();
-    gen_helper_data();
+
+    //get_helper_data(); 
+    gen_helper_data();  //There is problem here as well. With every run output changes
     cout<<"HELPER_DATA_NEW:"<<endl;
-    print_array(helper_data_new,259);
+    print_array_uint8t(helper_data_new,259);
 
     //For Generating Final 256 bit Key
     uint8_t key_32[32]; 
-    memset(key_32, 0, sizeof(key_32));
+    //memset(key_32, 0, sizeof(key_32));
+    fill(key_32,key_32 + sizeof(key_32),0);
 
     /**
          START DECODING - USE THE ERROR CORRECTION - TO CREATE THE PUF KEY
@@ -276,4 +296,5 @@ int main(){
     cout<<endl<<"PUF key \t: ";
     print_array(key_32, 32);
     //print_key(key_32,32);
+
 }
