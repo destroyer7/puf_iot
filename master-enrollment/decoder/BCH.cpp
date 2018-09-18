@@ -297,7 +297,7 @@ BCH::decode_bch(uint8_t *in, uint8_t *result)
     // memset(input, 0, sizeof(input));
 
     int8_t input[64];
-    memset(input, 0, sizeof(input));
+    //memset(input, 0, sizeof(input));
     fill(input,input+sizeof(input),0);
     tools.convert_uint8_array_to_bin_array(in, input, 8);
 
