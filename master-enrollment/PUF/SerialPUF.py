@@ -165,6 +165,14 @@ class SerialPUF:
         """
         self.ser.write(pack('<bbL', 99, 51, address))
         self.has_reply = False
+    
+    def send_command_append_helper(self, address):
+        """
+        Send an address as part of PUF Helper to Arduino. Arduino will append the helper to microSD
+        :param address:
+        """
+        self.ser.write(pack('<bbL', 99, 56, address))
+        self.has_reply = False
 
     def send_command_new_challenges(self):
         """
@@ -174,12 +182,28 @@ class SerialPUF:
         self.ser.write(pack('<bbL', 99, 50, 0))
         self.has_reply = False
 
+    def send_command_new_helper(self):
+        """
+        Send command to Arduino to add new helper to microSD. Arduino will initialize the writing helper
+        process to microSD
+        """
+        self.ser.write(pack('<bbL', 99, 55, 0)) 
+        self.has_reply = False
+
     def send_command_finish_writing_challenges(self):
         """
         Send command to Arduino to notify that the challenges is completely written. Arduino will close the challenge
         file in microSD
         """
         self.ser.write(pack('<bbL', 99, 52, 0))
+        self.has_reply = False
+
+    def send_command_finish_writing_helper(self):
+        """
+        Send command to Arduino to notify that the helper is completely written. Arduino will close the challenge
+        file in microSD
+        """
+        self.ser.write(pack('<bbL', 99, 57, 0))
         self.has_reply = False
 
     def send_command_generate_helper_data(self):
@@ -404,6 +428,14 @@ class SerialPUF:
         res = self.check_serial_data()
         return self.process_command(res)
 
+    def new_helper_on_sd(self):
+        """
+        Set up to add new helper in microSD through Arduino
+        """
+        self.send_command_new_helper()
+        res = self.check_serial_data()
+        return self.process_command(res)
+
     def append_challenges_on_sd(self, address):
         """
         Append address to a challenge in microSD through Arduino
@@ -413,6 +445,15 @@ class SerialPUF:
         res = self.check_serial_data()
         self.process_command(res)
 
+    def append_helper_on_sd(self, address):
+        """
+        Append address to a challenge in microSD through Arduino
+        :param address:
+        """
+        self.send_command_append_helper(address)
+        res = self.check_serial_data()
+        self.process_command(res)    
+
     def close_challenges_on_sd(self):
         """
         Ask Arduino to close challenge file which located in microSD
@@ -421,18 +462,40 @@ class SerialPUF:
         res = self.check_serial_data()
         self.process_command(res)
 
+    def close_helper_on_sd(self):
+        """
+        Ask Arduino to close helper file which located in microSD
+        """
+        self.send_command_finish_writing_helper()
+        res = self.check_serial_data()
+        self.process_command(res)
+    
+
     def write_challenges_to_sd(self, challenges):
         """
         Write a challenge to microSD through Arduino
         :param challenges:
         """
-        a = self.new_challenges_on_sd()
+        a = self.new_challenges_on_sd() 
         if a == 0:
             print("Error opening challenge file on microSD")
             exit(1)
         for i in challenges:
             self.append_challenges_on_sd(int(i))
         self.close_challenges_on_sd()
+
+    def write_helper_to_sd(self, helper):
+        """
+        Write a helper to microSD through Arduino
+        :param helper:
+        """
+        a = self.new_helper_on_sd() #Need to change that number
+        if a == 0:
+            print("Error opening helper file on microSD")
+            exit(1)
+        for i in helper:
+            self.append_helper_on_sd(int(i)) #Here
+        self.close_helper_on_sd() #Here
 
     def generate_helper_data_on_sd(self):
         """
