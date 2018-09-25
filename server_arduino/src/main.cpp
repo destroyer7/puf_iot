@@ -32,7 +32,7 @@ boolean readBit(long location) {
 void set() {
   bch = BCH();
   tools = Tools();
-  bch.initialize();               /* Read m */
+  bch.initialize();               /* Read m */  
 }
 
 void gen_key256(){
@@ -228,6 +228,7 @@ void print_key(uint8_t* key, uint8_t length) {
 void setup(void)
 { 
   //**************All files in caps: R.TXT, C.TXT, H.TXT *******************************
+  Serial.begin(115200);
   set(); 
   initializeSD();  
   delay(1000);

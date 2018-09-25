@@ -277,8 +277,8 @@ int main(){
     print_array_uint8t(key_per_row,37);
 
 
-    //get_helper_data(); 
-    gen_helper_data();  //There is problem here as well. With every run output changes
+    get_helper_data(); 
+    //gen_helper_data();  //There is problem here as well. With every run output changes
     cout<<"HELPER_DATA_NEW:"<<endl;
     print_array_uint8t(helper_data_new,259);
 
