@@ -1,5 +1,5 @@
 import time
-
+import binascii
 from random import shuffle
 from PUF import SerialPUF, Tools
 import threading
@@ -15,10 +15,10 @@ serialconnection4='/dev/ttyACM3'
 bitrate=115200
 
 challenge = read_integers("C.TXT")
-print(challenge)
+#print(challenge)
 
 helper = read_integers("H.TXT")
-print(helper)
+#print(helper)
 
 # Initialize serial connection to connect to Arduino
 serialPUF = SerialPUF.SerialPUF()
@@ -35,5 +35,5 @@ time.sleep(2)
 serialPUF.write_challenges_to_sd(challenge[:37 * 63])
 serialPUF.write_helper_to_sd(helper[:37 * 63])
 key32 = serialPUF.get_keys()
-print(key32)
+print(binascii.hexlify(key32))
 

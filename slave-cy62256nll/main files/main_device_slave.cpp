@@ -84,9 +84,7 @@ void set(){
 
   delay(1000);
 
-  bch = BCH();
-  tools = Tools();
-  bch.initialize();               /* Read m */
+             /* Read m */
 
 }
 
@@ -264,6 +262,16 @@ void gen_helper_data(){
   }
 }
 
+void write_key(){
+  File myFile = SD.open("k.txt", O_WRITE | O_CREAT | O_TRUNC);
+  if (myFile) {
+    for (int i = 0; i < 32;i++){
+      myFile.println(key_32[i]);
+    }
+    myFile.close();
+  }
+}
+
 void check_command(){
   int q;
   long a;
@@ -419,9 +427,12 @@ void check_command(){
       break;
     case GET_KEYS:
       // gen_key256();
+      turn_on_sram();
       readSRAMfromMicroSD();
+      turn_off_sram();
       readHelperDatafromMicroSD();
       decode();
+      write_key();
       Serial.write(99);
       Serial.write(GET_KEYS);
       Serial.write(0);
@@ -470,6 +481,9 @@ void check_command(){
 void setup() {
   set();
   initializeSD();
+  bch = BCH();
+  tools = Tools();
+  bch.initialize();    
 
   pinMode(PIN_POWER, OUTPUT);
 }
