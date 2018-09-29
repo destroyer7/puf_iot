@@ -280,6 +280,7 @@ class SerialPUF:
         elif (res[1] == 54):
             print("GET KEYS")
             self.has_reply = True
+            return res[4:]
         elif (res[1] == 55):
             print("NEW HELPER")
             self.has_reply = True
@@ -289,7 +290,6 @@ class SerialPUF:
         elif (res[1] == 57):
             print("FINISH APPEND HELPER")
             self.has_reply = True
-            return res[4:]
         else:
             print("UNKNOWN COMMAND " + str(res[1]))
 

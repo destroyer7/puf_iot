@@ -34,5 +34,6 @@ time.sleep(2)
 
 serialPUF.write_challenges_to_sd(challenge[:37 * 63])
 serialPUF.write_helper_to_sd(helper[:37 * 63])
-
+key32 = serialPUF.get_keys()
+print(key32)
 
